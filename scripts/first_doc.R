@@ -26,6 +26,23 @@ oop <- otp_data %>%
                               Delay.Min > 5 ~ "Late",
                               TRUE ~ "On-Time"))
 
+your_data_fixed <- your_data %>%
+  mutate(
+    # Check if the string contains a space (which implies time is present)
+    has_time = grepl(" ", datetime_char),
+    
+    # Use if_else to apply the correct parsing function
+    datetime_obj = if_else(
+      has_time,
+      # If TRUE (has time): use Month/Day/Year Hour:Minute parser
+      mdy_hm(datetime_char),
+      # If FALSE (no time): use Month/Day/Year parser
+      mdy(datetime_char)
+    ),
+    
+    # Final step: Convert to a pure Date object (dropping the time for consistency)
+    date_only = as_date(datetime_obj)
+  )
 
 
 
