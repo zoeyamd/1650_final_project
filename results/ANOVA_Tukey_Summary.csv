@@ -1,0 +1,4 @@
+"term","contrast","null.value","estimate","conf.low","conf.high","adj.p.value"
+"Frequency_Category","Medium Frequency (Base Core)-Low Frequency (Tail/Coverage)",0,12.7439742638165,12.0858935551807,13.4020549724523,0
+"Frequency_Category","High Frequency (Peak Core)-Low Frequency (Tail/Coverage)",0,31.3436027183807,30.2390231669978,32.4481822697636,0
+"Frequency_Category","High Frequency (Peak Core)-Medium Frequency (Base Core)",0,18.5996284545642,17.4289809862431,19.7702759228854,0

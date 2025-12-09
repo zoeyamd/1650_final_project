@@ -26,8 +26,7 @@ anova_test <- function(joined, ridership, frequency){
   #conduct post hoc analysis to identify difference between specific pairs
   post_hoc_result <- TukeyHSD(anova_result)
   
-  return(list(anova = summary(anova_result),
-              post_hoc = post_hoc_result))
+  return(list(anova = anova_result, post_hoc = post_hoc_result))
 }
 
 

@@ -1,0 +1,63 @@
+[1] "Early Incident LM Model Results"
+
+Call:
+lm(formula = as.formula(formula_text), data = joined)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-276.48 -107.24  -76.36   65.02 1706.76 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            215.87      17.22  12.535  < 2e-16 ***
+Frequency_Category.L   110.76      32.10   3.451 0.000641 ***
+Frequency_Category.Q   -74.24      27.38  -2.712 0.007087 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 213.7 on 293 degrees of freedom
+Multiple R-squared:  0.1203,	Adjusted R-squared:  0.1143 
+F-statistic: 20.03 on 2 and 293 DF,  p-value: 7.042e-09
+
+[1] "On-Time Incident LM Model Results"
+
+Call:
+lm(formula = as.formula(formula_text), data = joined)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-478.5 -225.7 -100.7  127.8 2241.3 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            409.84      27.28  15.026  < 2e-16 ***
+Frequency_Category.L   185.61      50.83   3.651 0.000309 ***
+Frequency_Category.Q   -85.36      43.36  -1.969 0.049928 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 338.5 on 293 degrees of freedom
+Multiple R-squared:  0.1042,	Adjusted R-squared:  0.09811 
+F-statistic: 17.05 on 2 and 293 DF,  p-value: 9.935e-08
+
+[1] "Late Incident LM Model Results"
+
+Call:
+lm(formula = as.formula(formula_text), data = joined)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-343.88 -100.98  -78.98   54.27 2868.44 
+
+Coefficients:
+                     Estimate Std. Error t value Pr(>|t|)    
+(Intercept)            248.14      21.79  11.386  < 2e-16 ***
+Frequency_Category.L   171.75      40.62   4.229 3.15e-05 ***
+Frequency_Category.Q   -62.97      34.64  -1.818   0.0701 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 270.5 on 293 degrees of freedom
+Multiple R-squared:  0.1209,	Adjusted R-squared:  0.1149 
+F-statistic: 20.14 on 2 and 293 DF,  p-value: 6.352e-09
+

@@ -1,7 +1,7 @@
 #load library
 library(ggplot2)
 
-#source work from run analysis file, which has all functions and fleet tests
+#source work from run file
 source("/Users/zoeybug/Documents/GitHub/wk12_github/scripts/run_analysis.R")
 
 #average ridership by stop frequency

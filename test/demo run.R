@@ -1,0 +1,122 @@
+#demo run of how to use the code! essentially just following the run.R file
+#but with actual data
+
+#LOAD DEPENDENCIES AND FUNCTIONS
+library(tidyverse)
+library(broom)
+library(knitr)
+
+source("/Users/zoeybug/Documents/GitHub/1650_final_project/scripts/processing.R")
+source("/Users/zoeybug/Documents/GitHub/1650_final_project/scripts/summarize.R")
+source("/Users/zoeybug/Documents/GitHub/1650_final_project/scripts/analysis.R")
+
+#PROCESSING
+#run processing function and pull data frames
+processed_data <- clean_and_process(
+  "/Users/zoeybug/Documents/GitHub/1650_final_project/test/demo data/ridership_simulated.csv",
+  "/Users/zoeybug/Documents/GitHub/1650_final_project/test/demo data/otp_simulated.csv",
+  "/Users/zoeybug/Documents/GitHub/1650_final_project/test/demo data/stop.csv")
+
+ridership_data <- processed_data$ridership
+otp_data <- processed_data$otp
+
+#SUMMARIZE
+#run summarizing functions
+frequency_ridership_combined <- summarize_ridership(ridership_data, 50)
+incidents_count <- summarize_otp(otp_data)
+
+#merge summaries together
+otp_ridership_joined <- frequency_ridership_combined %>%
+  inner_join(incidents_count, by = c("Route", "Stop.Number"))
+
+#ANALYSIS
+#ensure group variables are vectors
+frequency_ridership_combined$Frequency_Category <- factor(
+  frequency_ridership_combined$Frequency_Category,
+  levels = c("Low Frequency (Tail/Coverage)", 
+             "Medium Frequency (Base Core)", 
+             "High Frequency (Peak Core)"),
+  ordered = TRUE)
+
+otp_ridership_joined$Frequency_Category <- factor(
+  otp_ridership_joined$Frequency_Category,
+  levels = c("Low Frequency (Tail/Coverage)", 
+             "Medium Frequency (Base Core)", 
+             "High Frequency (Peak Core)"),
+  ordered = TRUE)
+
+#run ANOVA test for trip frequency x ridership
+anova_frequency_ridership <- anova_test(frequency_ridership_combined, 
+                                        "avg_riders_per_day", "Frequency_Category")
+
+#combine ANOVA + post-hoc results into table
+anova_table <- tidy(anova_frequency_ridership$anova)
+tukey_table <- tidy(anova_frequency_ridership$post_hoc)
+
+anova_tukey_summary <- bind_rows(anova_table %>% 
+                                   filter(term != "Residuals"), tukey_table)
+anova_tukey_summary <- anova_tukey_summary[-c(1),-c(2:6)]
+
+#save anova results
+write.csv(x = anova_tukey_summary,
+          file = "demo results/anova_tukey_summary.csv",
+          row.names = FALSE,
+          quote = TRUE)
+
+#run lm model test for incident type x trip freequency
+lm_incident_frequency <- lm_model(otp_ridership_joined, 
+                                  incident_cols = c("Early","Late", "`On-Time`"))
+
+#save lm model results
+sink("demo results/lm_model_summary.txt")
+print("Early Incident LM Model Results")
+print(lm_incident_frequency$Early)
+print("On-Time Incident LM Model Results")
+print(lm_incident_frequency$`\`On-Time\``)
+print("Late Incident LM Model Results")
+print(lm_incident_frequency$Late)
+sink()
+
+#now go to/copy code from plotting.R file. in this case, i will copy the code
+#average ridership by stop frequency
+frequency_plot <- ggplot(otp_ridership_joined, 
+                         aes(x = Frequency_Category, y = avg_riders_per_day)) +
+  geom_boxplot(fill = "lightblue", color = "darkblue", alpha = 0.7) +
+  labs(title = "Average Ridership by Stop Service Frequency",
+       subtitle = "Analysis confirms significant differences across all service levels.",
+       x = "Service Frequency Category",
+       y = "Average Riders per Day") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+        plot.title = element_text(face = "bold"))
+
+#relationship between late and early incidents 
+#off-setting zero values 
+incident_plot <- ggplot(otp_ridership_joined, aes(x = Late +1, y = Early +1)) +
+  geom_point(alpha = 0.6, color = "#FF7F00") +
+  geom_smooth(method = "lm", se = TRUE, color = "#0066CC") +
+  #spreading out compressed data in the beginning + pulling in outliers
+  scale_x_continuous(trans = 'log10', labels = scales::comma) +
+  scale_y_continuous(trans = 'log10', labels = scales::comma) +
+  labs(title = "Relationship Between Late and Early Incidents per Stop",
+       subtitle = "High positive correlation suggests unstable scheduling (route volatility).",
+       x = "Total Late Incident Count",
+       y = "Total Early Incident Count") +
+  theme_minimal()
+
+#save plots to results folder
+#frequency plot
+ggsave(filename = "ridership_frequency_plot.png",
+       plot = frequency_plot, 
+       path = "demo results", 
+       width = 10, 
+       height = 6, 
+       units = "in")
+#incident plot
+ggsave(filename = "incident_plot.png", 
+       plot = incident_plot, 
+       path = "demo results", 
+       width = 8, 
+       height = 5, 
+       units = "in")
+
