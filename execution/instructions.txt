@@ -1,0 +1,10 @@
+welcome to my 1560 final project! here is how to run my code:
+
+create a new R script file.
+open run.R file located in execution folder. 
+follow steps in run.R, fill in with your unique data/paths as notated.
+for plotting, refer to the plotting.R file located in scripts folder. this code can be copied into the same file that you are currently working in. 
+to review outputs, go to the results folder! there should be two plots in .png files, a summary table in a .csv file, as well as another summary in a .txt file. 
+
+thank you so much for using my code! i hope the results offer valuable insight into your bus-system performance!
+ 
