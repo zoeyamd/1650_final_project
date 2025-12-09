@@ -48,7 +48,14 @@ otp_ridership_joined$Frequency_Category <- factor(
 anova_frequency_ridership <- anova_test(frequency_ridership_combined, 
                                    "avg_riders_per_day", "Frequency_Category")
 
+print(anova_frequency_ridership$anova)
+
 #run lm model test for incident type x trip freequency
 lm_incident_frequency <- lm_model(otp_ridership_joined, 
                                   incident_cols = c("Early","Late", "`On-Time`"))
+
+print(lm_incident_frequency)
+
+#PLOT
+
 
