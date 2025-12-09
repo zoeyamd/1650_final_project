@@ -6,7 +6,7 @@ This repository is focused on analyzing RIPTA ridership and on-time performance 
 The files of this repository are organized as follows:<br>
 _scripts_: folder containing files with functions<br>
 _execution_: folder containing executable run script file and step-by-step instructions<br>
-_test_: folder containing data + mock run script in order to illustrate how the repository is to be run/what it produces<br>
+_demo_: folder containing demo run script and results in order to illustrate how the repository is to be run/what it produces<br>
 
 What this repository will return is:<br>
 _anova test results_: summary of statistical relationship between service frequency and ridership<br>
