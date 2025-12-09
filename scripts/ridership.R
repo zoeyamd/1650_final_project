@@ -28,19 +28,19 @@ total_trip_frequency <- daily_trip_frequency %>%
 .frequency_thresholds <- total_trip_frequency %>%
   pull(Total_Trips_Served) %>%
   # Calculate the 33rd and 66th percentiles, ignoring any NA values
-  quantile(c(0.33, 0.66), na.rm = TRUE)
+  quantile(c(0.25, 0.75), na.rm = TRUE)
 
-.p33_threshold <- round(.frequency_thresholds["33%"]) # 33rd percentile cutoff
-.p66_threshold <- round(.frequency_thresholds["66%"]) # 66th percentile cutoff
+.p25_threshold <- round(.frequency_thresholds["25%"]) # 25th percentile cutoff
+.p75_threshold <- round(.frequency_thresholds["75%"]) # 75th percentile cutoff
 
 frequency_categorized <- total_trip_frequency %>%
   mutate(
     Frequency_Category = case_when(
       # Category 1: High Frequency (Trips_Served is greater than or equal to the 66th percentile)
-      Total_Trips_Served >= .p66_threshold ~ "High Frequency (Peak Core)",
+      Total_Trips_Served >= .p75_threshold ~ "High Frequency (Peak Core)",
       
       # Category 2: Medium Frequency (Trips_Served is greater than or equal to the 33rd percentile, but less than p66)
-      Total_Trips_Served >= .p33_threshold ~ "Medium Frequency (Base Core)",
+      Total_Trips_Served >= .p25_threshold ~ "Medium Frequency (Base Core)",
       
       # Category 3: Low Frequency (Everything else, which is below the 33rd percentile)
       TRUE ~ "Low Frequency (Tail/Coverage)"
@@ -49,9 +49,34 @@ frequency_categorized <- total_trip_frequency %>%
 
 #combined
 frequency_ridership_combined <- frequency_categorized %>%
-  select(Route, Stop.Number, Frequency_Category) %>%
+  select(Route, Stop.Number, Total_Trips_Served, Frequency_Category) %>%
   inner_join(average_ridership, by = c("Route","Stop.Number")) %>%
   distinct()
+
+
+
+# Ensure the Frequency_Category is treated as an ordered factor
+# This is important for statistical interpretation since your categories have an inherent order.
+boob$Frequency_Category <- factor(
+  frequency_ridership_combined$Frequency_Category,
+  levels = c("Low Frequency (Tail/Coverage)", 
+             "Medium Frequency (Base Core)", 
+             "High Frequency (Peak Core)"),
+  ordered = TRUE
+)
+
+# Run the ANOVA test
+anova_result <- aov(avg_riders_per_day ~ Frequency_Category, 
+                    data = boob)
+
+# Print the summary of the ANOVA
+summary(anova_result)
+
+# Optional: Run a post-hoc test (like Tukey HSD) to see which specific pairs are different
+TukeyHSD(anova_result)
+
+
+
 
 
 

@@ -30,12 +30,13 @@ otp_data <- otp_data %>%
                               TRUE ~ "On-Time"))
 
 #matching stops
-.stops <- read.csv("/Users/zoeybug/Documents/GitHub/1650_final_project/data/stop.csv")
-.stops <- .stops %>%
-  rename(Stop.Number = TimePointId, Stop = TimePointShortName)
+stops <- read.csv("/Users/zoeybug/Documents/GitHub/1650_final_project/data/stopsA.csv")
+stops <- stops %>%
+  rename(Stop.Number = stop_id) %>%
+  select(-c("Route"))
 
 otp_data <- otp_data %>%
-  left_join(.stops, by = "Stop") %>%
+  left_join(stops, by = "Stop") %>%
   select(-c("Stop"))
 
 
